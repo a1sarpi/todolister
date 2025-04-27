@@ -24,7 +24,8 @@ func main() {
 		fmt.Println("1. Add Task")
 		fmt.Println("2. List Tasks")
 		fmt.Println("3. Mark Task as Done")
-		fmt.Println("4. Exit")
+		fmt.Println("4. Search Tasks")
+		fmt.Println("5. Exit")
 		fmt.Print("Choose an option: ")
 
 		input, _ := reader.ReadString('\n')
@@ -34,10 +35,27 @@ func main() {
 		case "1":
 			addTask(reader)
 		case "2":
-			listTasks()
+			listTasks(tasks)
 		case "3":
 			markDone(reader)
 		case "4":
+			fmt.Print("Enter search term: ")
+			searchTerm, _ := reader.ReadString('\n')
+			searchTerm = strings.TrimSpace(searchTerm)
+
+			if searchTerm == "" {
+				fmt.Println("Search term cannot be empty!")
+				continue
+			}
+
+			foundTasks := searchTasks(searchTerm)
+			if len(foundTasks) == 0 {
+				fmt.Printf("No tasks found containing '%s'\n", searchTerm)
+			} else {
+				fmt.Printf("Tasks containing '%s':\n", searchTerm)
+				listTasks(foundTasks)
+			}
+		case "5":
 			fmt.Println("Goodbye!")
 			os.Exit(0)
 		default:
@@ -61,13 +79,13 @@ func addTask(reader *bufio.Reader) {
 	fmt.Println("Task added!")
 }
 
-func listTasks() {
-	if len(tasks) == 0 {
+func listTasks(t []Task) {
+	if len(t) == 0 {
 		fmt.Println("No tasks yet!")
 		return
 	}
 
-	for _, task := range tasks {
+	for _, task := range t {
 		status := " "
 		if task.Done {
 			status = "✓"
@@ -78,7 +96,7 @@ func listTasks() {
 }
 
 func markDone(reader *bufio.Reader) {
-	listTasks()
+	listTasks(tasks)
 	if len(tasks) == 0 {
 		return
 	}
@@ -103,4 +121,17 @@ func markDone(reader *bufio.Reader) {
 	}
 
 	fmt.Println("Task not found!")
+}
+
+func searchTasks(keyword string) []Task {
+	var result []Task
+	keyword = strings.ToLower(keyword)
+
+	for _, task := range tasks {
+		if strings.Contains(strings.ToLower(task.Text), keyword) {
+			result = append(result, task)
+		}
+	}
+
+	return result
 }
