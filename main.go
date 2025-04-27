@@ -27,7 +27,8 @@ func main() {
 		fmt.Println("	b. Show Complete Tasks")
 		fmt.Println("	c: Show All (default)")
 		fmt.Println("3. Mark Task as Done")
-		fmt.Println("4. Exit")
+		fmt.Println("4. Search Tasks")
+		fmt.Println("5. Exit")
 		fmt.Print("Choose an option: ")
 
 		input, _ := reader.ReadString('\n')
@@ -58,6 +59,23 @@ func main() {
 		case "3":
 			markDone(reader)
 		case "4":
+			fmt.Print("Enter search term: ")
+			searchTerm, _ := reader.ReadString('\n')
+			searchTerm = strings.TrimSpace(searchTerm)
+
+			if searchTerm == "" {
+				fmt.Println("Search term cannot be empty!")
+				continue
+			}
+
+			foundTasks := searchTasks(searchTerm)
+			if len(foundTasks) == 0 {
+				fmt.Printf("No tasks found containing '%s'\n", searchTerm)
+			} else {
+				fmt.Printf("Tasks containing '%s':\n", searchTerm)
+				listTasks(foundTasks)
+			}
+		case "5":
 			fmt.Println("Goodbye!")
 			os.Exit(0)
 		default:
@@ -123,6 +141,19 @@ func markDone(reader *bufio.Reader) {
 	}
 
 	fmt.Println("Task not found!")
+}
+
+func searchTasks(keyword string) []Task {
+	var result []Task
+	keyword = strings.ToLower(keyword)
+
+	for _, task := range tasks {
+		if strings.Contains(strings.ToLower(task.Text), keyword) {
+			result = append(result, task)
+		}
+	}
+
+	return result
 }
 
 func getIncompleteTasks() []Task {
