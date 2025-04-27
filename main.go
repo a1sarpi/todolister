@@ -23,6 +23,9 @@ func main() {
 		fmt.Println("\nTo-Do List Manager")
 		fmt.Println("1. Add Task")
 		fmt.Println("2. List Tasks")
+		fmt.Println("	a. Show Incomplete Tasks")
+		fmt.Println("	b. Show Complete Tasks")
+		fmt.Println("	c: Show All (default)")
 		fmt.Println("3. Mark Task as Done")
 		fmt.Println("4. Search Tasks")
 		fmt.Println("5. Exit")
@@ -35,7 +38,24 @@ func main() {
 		case "1":
 			addTask(reader)
 		case "2":
-			listTasks(tasks)
+			fmt.Println("  a. Show Incomplete Tasks")
+			fmt.Println("  b. Show Complete Tasks")
+			fmt.Println("  c. Show All (default)")
+			fmt.Print("Choose an option: ")
+
+			listInput, _ := reader.ReadString('\n')
+			listInput = strings.TrimSpace(listInput)
+
+			switch listInput {
+			case "a":
+				listTasks(getIncompleteTasks())
+			case "b":
+				listTasks(getCompleteTasks())
+			case "c":
+				listTasks(tasks)
+			default:
+				listTasks(tasks)
+			}
 		case "3":
 			markDone(reader)
 		case "4":
@@ -129,6 +149,28 @@ func searchTasks(keyword string) []Task {
 
 	for _, task := range tasks {
 		if strings.Contains(strings.ToLower(task.Text), keyword) {
+			result = append(result, task)
+		}
+	}
+
+	return result
+}
+
+func getIncompleteTasks() []Task {
+	var result []Task
+	for _, task := range tasks {
+		if !task.Done {
+			result = append(result, task)
+		}
+	}
+
+	return result
+}
+
+func getCompleteTasks() []Task {
+	var result []Task
+	for _, task := range tasks {
+		if task.Done {
 			result = append(result, task)
 		}
 	}
