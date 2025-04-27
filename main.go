@@ -23,6 +23,9 @@ func main() {
 		fmt.Println("\nTo-Do List Manager")
 		fmt.Println("1. Add Task")
 		fmt.Println("2. List Tasks")
+		fmt.Println("	a. Show Incomplete Tasks")
+		fmt.Println("	b. Show Complete Tasks")
+		fmt.Println("	c: Show All (default)")
 		fmt.Println("3. Mark Task as Done")
 		fmt.Println("4. Exit")
 		fmt.Print("Choose an option: ")
@@ -34,7 +37,24 @@ func main() {
 		case "1":
 			addTask(reader)
 		case "2":
-			listTasks()
+			fmt.Println("  a. Show Incomplete Tasks")
+			fmt.Println("  b. Show Complete Tasks")
+			fmt.Println("  c. Show All (default)")
+			fmt.Print("Choose an option: ")
+
+			listInput, _ := reader.ReadString('\n')
+			listInput = strings.TrimSpace(listInput)
+
+			switch listInput {
+			case "a":
+				listTasks(getIncompleteTasks())
+			case "b":
+				listTasks(getCompleteTasks())
+			case "c":
+				listTasks(tasks)
+			default:
+				listTasks(tasks)
+			}
 		case "3":
 			markDone(reader)
 		case "4":
@@ -61,13 +81,13 @@ func addTask(reader *bufio.Reader) {
 	fmt.Println("Task added!")
 }
 
-func listTasks() {
-	if len(tasks) == 0 {
+func listTasks(t []Task) {
+	if len(t) == 0 {
 		fmt.Println("No tasks yet!")
 		return
 	}
 
-	for _, task := range tasks {
+	for _, task := range t {
 		status := " "
 		if task.Done {
 			status = "✓"
@@ -78,7 +98,7 @@ func listTasks() {
 }
 
 func markDone(reader *bufio.Reader) {
-	listTasks()
+	listTasks(tasks)
 	if len(tasks) == 0 {
 		return
 	}
@@ -103,4 +123,26 @@ func markDone(reader *bufio.Reader) {
 	}
 
 	fmt.Println("Task not found!")
+}
+
+func getIncompleteTasks() []Task {
+	var result []Task
+	for _, task := range tasks {
+		if !task.Done {
+			result = append(result, task)
+		}
+	}
+
+	return result
+}
+
+func getCompleteTasks() []Task {
+	var result []Task
+	for _, task := range tasks {
+		if task.Done {
+			result = append(result, task)
+		}
+	}
+
+	return result
 }
