@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"os"
 	"strings"
+
+	"github.com/fatih/color"
 )
 
 type Task struct {
@@ -15,6 +17,11 @@ type Task struct {
 
 var tasks []Task
 var currentID = 1
+
+var (
+	red   = color.New(color.FgRed).SprintFunc()
+	green = color.New(color.FgGreen).SprintFunc()
+)
 
 func main() {
 	reader := bufio.NewReader(os.Stdin)
@@ -106,9 +113,9 @@ func listTasks(t []Task) {
 	}
 
 	for _, task := range t {
-		status := " "
+		status := red("✗")
 		if task.Done {
-			status = "✓"
+			status = green("✓")
 		}
 
 		fmt.Printf("[%d] [%s] %s\n", task.ID, status, task.Text)
