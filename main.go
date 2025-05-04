@@ -26,6 +26,8 @@ var (
 func main() {
 	reader := bufio.NewReader(os.Stdin)
 
+	fmt.Println("Hello, World!")
+
 	for {
 		fmt.Println("\nTo-Do List Manager")
 		fmt.Println("1. Add Task")
