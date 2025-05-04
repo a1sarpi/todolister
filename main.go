@@ -36,6 +36,7 @@ func main() {
 		fmt.Println("3. Mark Task as Done")
 		fmt.Println("4. Search Tasks")
 		fmt.Println("5. Exit")
+		fmt.Println("6. Hello")
 		fmt.Print("Choose an option: ")
 
 		input, _ := reader.ReadString('\n')
@@ -85,6 +86,8 @@ func main() {
 		case "5":
 			fmt.Println("Goodbye!")
 			os.Exit(0)
+		case "6":
+			fmt.Println("Hello!")
 		default:
 			fmt.Println("Invalid option!")
 		}
